@@ -6,7 +6,7 @@ class Asteroid
   def initialize
     @image = Gosu::Image.new("media/asteroid.png")
     @angle = rand(0.0..360.0)
-    @path = rand(0.0..360.0)
+    @path = rand(0.0..359.9)
     @vel_x = Gosu.offset_x(@path, 0.6)
     @vel_y = Gosu.offset_y(@path, 0.6)
     start_location
@@ -33,6 +33,22 @@ class Asteroid
   end
 
   def start_location
-    warp(100, 100)
+    # Window Width 640,
+    # Window Height 480
+    # Tells me which direction its going
+    angle_quadrant = @path / 90
+    # if it is heading up generally
+    if angle_quadrant >= 3.5 || angle_quadrant <= 0.5
+      warp(rand(0..639), 0)
+    # if it is heading right generally
+  elsif angle_quadrant <= 1.5 && angle_quadrant >= 0.5
+    # if it is heading left generally
+    warp(0, rand(0..479))
+  elsif angle_quadrant <= 2.5 && angle_quadrant >= 1.5
+    # if it is heading down generally
+    warp(rand(0..639), 480)
+  elsif angle_quadrant <= 3.5 && angle_quadrant >= 2.5
+      warp(640, rand(0..479))
+    end
   end
 end
