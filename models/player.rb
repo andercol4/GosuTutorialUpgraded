@@ -59,10 +59,10 @@ class Player
     end
   end
 
-  def crash_asteroids(asteroids)
-    asteroids.reject! do |asteroid|
+  def crash(asteroids)
+    crash = false
+    asteroids.any? do |asteroid|
       if Gosu.distance(@x, @y, asteroid.x, asteroid.y) < 45
-        @score = @score - 50
         @crash.play
         true
       else
