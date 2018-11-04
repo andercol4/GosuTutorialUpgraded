@@ -13,6 +13,7 @@ class Tutorial < Gosu::Window
     self.caption = "Stars and Stroids"
     @game_over = false
     @background_image = Gosu::Image.new("media/space.png", :tileable => true)
+    @crash = Gosu::Sample.new("media/crash.wav")
 
     @player = Player.new
     @player.warp(320, 240)
@@ -20,6 +21,7 @@ class Tutorial < Gosu::Window
     @star_anim = Gosu::Image.load_tiles("media/star.png", 25, 25)
     @stars = Array.new
     @asteroids = Array.new
+    @lasers = Array.new
     @font = Gosu::Font.new(20)
 
   end
@@ -39,7 +41,6 @@ class Tutorial < Gosu::Window
     else
       draw_game_over_screen
     end
-
   end
 
   def player_movement
@@ -51,6 +52,9 @@ class Tutorial < Gosu::Window
     end
     if Gosu.button_down? Gosu::KB_UP or Gosu::button_down? Gosu::GP_BUTTON_0
       @player.accelerate
+    end
+    if Gosu.button_down? Gosu::KB_SPACE
+      @lasers.push(Laser.new(@player.angle, @player.x, @player.y))
     end
     @player.move
     @player.collect_stars(@stars)
@@ -64,13 +68,23 @@ class Tutorial < Gosu::Window
     if rand(100) < 4 && @asteroids.size < 5
       @asteroids.push(Asteroid.new)
     end
+    @lasers.reject! do |laser|
+      hit_asteroid = laser.hit_asteroid(@asteroids)
+      if hit_asteroid
+        @crash.play
+        @asteroids.delete(hit_asteroid)
+      end
+      laser.out_of_bounds? || hit_asteroid
+    end
     @asteroids.each { |asteroid| asteroid.move }
+    @lasers.each { |laser| laser.move}
   end
 
   def draw_game_screen
     @player.draw
     @stars.each { |star| star.draw }
     @asteroids.each { |asteroid| asteroid.draw }
+    @lasers.each { |laser| laser.draw }
     @font.draw_text("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 

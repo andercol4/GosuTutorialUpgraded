@@ -1,5 +1,6 @@
 require 'gosu'
 class Player
+  attr_reader :x, :y, :angle
   def initialize
     @image = Gosu::Image.new("media/starfighter.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
