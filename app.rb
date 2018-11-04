@@ -26,44 +26,57 @@ class Tutorial < Gosu::Window
 
   def update
     unless @game_over
-      if Gosu.button_down? Gosu::KB_LEFT or Gosu::button_down? Gosu::GP_LEFT
-        @player.turn_left
-      end
-      if Gosu.button_down? Gosu::KB_RIGHT or Gosu::button_down? Gosu::GP_RIGHT
-        @player.turn_right
-      end
-      if Gosu.button_down? Gosu::KB_UP or Gosu::button_down? Gosu::GP_BUTTON_0
-        @player.accelerate
-      end
-      @player.move
-      @player.collect_stars(@stars)
-      @game_over = @player.crash(@asteroids)
-
-
-      if rand(100) < 4 && @stars.size < 25
-        @stars.push(Star.new(@star_anim))
-      end
-
-      if rand(100) < 4 && @asteroids.size < 5
-        @asteroids.push(Asteroid.new)
-      end
-      @asteroids.each { |asteroid| asteroid.move }
+      player_movement
+      update_objects
       @game_over = @player.crash(@asteroids)
     end
   end
 
   def draw
+    @background_image.draw(0, 0, ZOrder::BACKGROUND)
     unless @game_over
-      @background_image.draw(0, 0, ZOrder::BACKGROUND)
-      @player.draw
-      @stars.each { |star| star.draw }
-      @asteroids.each { |asteroid| asteroid.draw }
-      @font.draw_text("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      draw_game_screen
     else
-      @font.draw_text("Final Score: #{@player.score}", 260, 200, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
-      @font.draw_text("ESC to exit", 270, 240, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+      draw_game_over_screen
     end
 
+  end
+
+  def player_movement
+    if Gosu.button_down? Gosu::KB_LEFT or Gosu::button_down? Gosu::GP_LEFT
+      @player.turn_left
+    end
+    if Gosu.button_down? Gosu::KB_RIGHT or Gosu::button_down? Gosu::GP_RIGHT
+      @player.turn_right
+    end
+    if Gosu.button_down? Gosu::KB_UP or Gosu::button_down? Gosu::GP_BUTTON_0
+      @player.accelerate
+    end
+    @player.move
+    @player.collect_stars(@stars)
+  end
+
+  def update_objects
+    if rand(100) < 4 && @stars.size < 25
+      @stars.push(Star.new(@star_anim))
+    end
+
+    if rand(100) < 4 && @asteroids.size < 5
+      @asteroids.push(Asteroid.new)
+    end
+    @asteroids.each { |asteroid| asteroid.move }
+  end
+
+  def draw_game_screen
+    @player.draw
+    @stars.each { |star| star.draw }
+    @asteroids.each { |asteroid| asteroid.draw }
+    @font.draw_text("Score: #{@player.score}", 10, 10, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+  end
+
+  def draw_game_over_screen
+    @font.draw_text("Final Score: #{@player.score}", 260, 200, ZOrder::UI, 1.0, 1.0, Gosu::Color::YELLOW)
+    @font.draw_text("ESC to exit", 270, 240, ZOrder::UI, 1.0, 1.0, Gosu::Color::RED)
   end
 
   def button_down(id)
