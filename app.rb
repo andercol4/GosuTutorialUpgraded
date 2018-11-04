@@ -36,6 +36,7 @@ class Tutorial < Gosu::Window
     end
     @player.move
     @player.collect_stars(@stars)
+    @player.crash_asteroids(@asteroids)
 
     if rand(100) < 4 && @stars.size < 25
       @stars.push(Star.new(@star_anim))
@@ -44,7 +45,7 @@ class Tutorial < Gosu::Window
     if rand(100) < 4 && @asteroids.size < 5
       @asteroids.push(Asteroid.new)
     end
-
+    @asteroids.each { |asteroid| asteroid.move }
   end
 
   def draw

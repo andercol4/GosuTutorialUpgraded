@@ -3,6 +3,7 @@ class Player
   def initialize
     @image = Gosu::Image.new("media/starfighter.bmp")
     @beep = Gosu::Sample.new("media/beep.wav")
+    @crash = Gosu::Sample.new("media/crash.wav")
     @x = @y = @vel_x = @vel_y = @angle = 0.0
     @score = 0
   end
@@ -35,7 +36,11 @@ class Player
   end
 
   def draw
-    @image.draw_rot(@x, @y, ZOrder::PLAYER, @angle)
+    @image.draw_rot(
+      @x, @y,
+      ZOrder::PLAYER,
+      @angle
+    )
   end
 
   def score
@@ -47,6 +52,18 @@ class Player
       if Gosu.distance(@x, @y, star.x, star.y) < 35
         @score += 10
         @beep.play
+        true
+      else
+        false
+      end
+    end
+  end
+
+  def crash_asteroids(asteroids)
+    asteroids.reject! do |asteroid|
+      if Gosu.distance(@x, @y, asteroid.x, asteroid.y) < 45
+        @score = @score - 50
+        @crash.play
         true
       else
         false
