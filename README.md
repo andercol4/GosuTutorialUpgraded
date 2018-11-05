@@ -1,6 +1,7 @@
 ## About
 Followed this tutorial to get started
-git@github.com:andercol4/GosuTutorialUpgraded.git
+
+https://github.com/gosu/gosu/wiki/Ruby-Tutorial
 
 I added asteroids you need to avoid, lasers to shoot the asteroids, and a game over screen that displays your total Score
 
